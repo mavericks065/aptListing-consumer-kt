@@ -14,10 +14,11 @@ class ApartmentCreationEventListener(
     @RabbitListener(
         queues = ["apartments-created"]
     )
-    fun processEvent(event:ByteArray) {
+    fun processEvent(event: ByteArray): Apartment {
         val raw = jsonObjectMapper.readTree(event)
         val newApartment = jsonObjectMapper.treeToValue<Apartment>(raw)
         println("Should probably store it in some analytics DB but this is a demo...s")
         println(newApartment)
+        return newApartment
     }
 }

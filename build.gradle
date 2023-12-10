@@ -8,6 +8,16 @@ plugins {
 	id 'au.com.dius.pact' version "4.6.3"
 }
 
+sourceSets {
+	pact {
+		kotlin {
+			srcDirs += 'src/pact/kotlin'
+		}
+		compileClasspath += sourceSets.main.output
+		runtimeClasspath += sourceSets.main.output
+	}
+}
+
 group = 'com.nig'
 version = '0.0.1-SNAPSHOT'
 
@@ -17,6 +27,7 @@ java {
 
 repositories {
 	mavenCentral()
+	google()
 }
 
 dependencies {
@@ -25,9 +36,11 @@ dependencies {
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.0'
 	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.16.0'
 
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
 	testImplementation 'org.springframework.amqp:spring-rabbit-test'
-	testImplementation 'au.com.dius.pact.consumer:junit5'
+	testImplementation 'au.com.dius.pact.consumer:junit5:4.6.3'
 }
 
 tasks.withType(KotlinCompile) {
@@ -39,4 +52,22 @@ tasks.withType(KotlinCompile) {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+task pactTest(type: Test) {
+	description = 'Runs pact tests'
+	group = 'pact'
+
+	testClassesDirs = sourceSets.pact.output.classesDirs
+	classpath = sourceSets.pact.runtimeClasspath
+	useJUnitPlatform()
+	shouldRunAfter test
+}
+
+pact {
+	publish {
+		pactDirectory = "$buildDir/pacts"
+		pactBrokerUrl = 'http://localhost:9292'
+		version = "1.0.0"
+	}
 }
