@@ -8,16 +8,6 @@ plugins {
 	id 'au.com.dius.pact' version "4.6.3"
 }
 
-sourceSets {
-	pact {
-		kotlin {
-			srcDirs += 'src/pact/kotlin'
-		}
-		compileClasspath += sourceSets.main.output
-		runtimeClasspath += sourceSets.main.output
-	}
-}
-
 group = 'com.nig'
 version = '0.0.1-SNAPSHOT'
 
@@ -41,6 +31,7 @@ dependencies {
 	}
 	testImplementation 'org.springframework.amqp:spring-rabbit-test'
 	testImplementation 'au.com.dius.pact.consumer:junit5:4.6.3'
+	testImplementation 'org.hamcrest:hamcrest'
 }
 
 tasks.withType(KotlinCompile) {
@@ -54,20 +45,20 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-task pactTest(type: Test) {
-	description = 'Runs pact tests'
-	group = 'pact'
+task copyPacts(type: Copy) {
+	description 'Copies the generated Pact json file to the provider resources directory'
 
-	testClassesDirs = sourceSets.pact.output.classesDirs
-	classpath = sourceSets.pact.runtimeClasspath
-	useJUnitPlatform()
-	shouldRunAfter test
+	from('target/pacts/')
+	into('../test/src/test/pact/')
 }
 
 pact {
 	publish {
-		pactDirectory = "$buildDir/pacts"
-		pactBrokerUrl = 'http://localhost:9292'
-		version = "1.0.0"
+//		pactDirectory = 'consumer/build/pacts'
+		pactBrokerUrl = 'http://localhost:9292/'
+//		pactBrokerUsername = 'pact_workshop'
+//		pactBrokerPassword = 'pact_workshop'
+//		tags = [getGitBranch(), 'test', 'prod']
+//		consumerVersion = getGitHash()
 	}
 }
