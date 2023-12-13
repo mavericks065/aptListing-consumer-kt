@@ -19,8 +19,8 @@ import java.util.*
 @ExtendWith(PactConsumerTestExt::class)
 class ApartmentCreationEventListenerPactTest {
     companion object {
-        const val PROVIDER = "apartment-listing-api.web.provider"
-        const val CONSUMER = "apartments.analytics.consumer"
+        const val PROVIDER = "apartment-listings"
+        const val CONSUMER = "apartment-price-analytics"
     }
 
     private val eventSerdeConfig = EventSerdeConfig()
@@ -41,13 +41,14 @@ class ApartmentCreationEventListenerPactTest {
             .expectsToReceive("New Apartment created")
             .withContent(bodySuccess)
             .toPact()
+
     }
 
     @Test
     @PactTestFor(
         pactMethod = "createPactForSuccessApartmentCreation",
         providerType = ProviderType.ASYNCH,
-        providerName = "apartment-listing-api.web.apartment-created-provider",
+        providerName = PROVIDER,
         pactVersion = PactSpecVersion.V4
     )
     fun successApartmentCreation(pact: V4Pact) {

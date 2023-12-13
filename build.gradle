@@ -52,13 +52,22 @@ task copyPacts(type: Copy) {
 	into('../test/src/test/pact/')
 }
 
+def getGitHash = { ->
+	def stdout = new ByteArrayOutputStream()
+	exec {
+		commandLine 'git', 'rev-parse', '--short', 'HEAD'
+		standardOutput = stdout
+	}
+	return stdout.toString().trim()
+}
+
 pact {
 	publish {
 //		pactDirectory = 'consumer/build/pacts'
 		pactBrokerUrl = 'http://localhost:9292/'
 //		pactBrokerUsername = 'pact_workshop'
 //		pactBrokerPassword = 'pact_workshop'
-//		tags = [getGitBranch(), 'test', 'prod']
-//		consumerVersion = getGitHash()
+		tags = ['latest']
+		consumerVersion = getGitHash()
 	}
 }
