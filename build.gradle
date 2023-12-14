@@ -63,10 +63,7 @@ def getGitHash = { ->
 
 pact {
 	publish {
-//		pactDirectory = 'consumer/build/pacts'
 		pactBrokerUrl = 'http://localhost:9292/'
-//		pactBrokerUsername = 'pact_workshop'
-//		pactBrokerPassword = 'pact_workshop'
 		tags = ['latest']
 		consumerVersion = getGitHash()
 	}

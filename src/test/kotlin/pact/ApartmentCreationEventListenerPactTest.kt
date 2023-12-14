@@ -41,7 +41,6 @@ class ApartmentCreationEventListenerPactTest {
             .expectsToReceive("New Apartment created")
             .withContent(bodySuccess)
             .toPact()
-
     }
 
     @Test
@@ -72,7 +71,6 @@ class ApartmentCreationEventListenerPactTest {
         )
 
         // then
-//        Assertions.assertEquals(expectedEvent, event)
         Assertions.assertEquals(expectedEvent.id, event.id)
         Assertions.assertEquals(expectedEvent.name, event.name)
         Assertions.assertEquals(expectedEvent.description, event.description)
@@ -82,13 +80,3 @@ class ApartmentCreationEventListenerPactTest {
         Assertions.assertEquals(expectedEvent.energyRating, event.energyRating)
     }
 }
-//        val stateMap = msg.providerStates[0].params
-//        val expectedEvent = Apartment(
-//            id = stateMap["id"] as UUID,
-//            name = stateMap["name"] as String,
-//            description = stateMap["description"] as String,
-//            address = stateMap["address"] as String,
-//            city = stateMap["city"] as String,
-//            postCode = stateMap["postCode"] as Int,
-//            energyRating = stateMap["energyRating"] as String?,
-//        )
